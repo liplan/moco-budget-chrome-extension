@@ -10,7 +10,7 @@ How to:
 
 4. Click 'Load unpacked' und select the extensions folder.
 
-5. Switch in Details > Site access > https://{subdomain}.mocoapp.com/* to active (might be prechosen)
+5. Switch in Details > Site access > https://{SUBDOMAIN}.mocoapp.com/* to active (might be prechosen)
 
 6. Track your time and take care of budgets
 
