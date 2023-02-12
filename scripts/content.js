@@ -1,5 +1,6 @@
 // get the personal token from Moco > Profil > Integrationen > Persönlicher API Schlüssel
-const MOCOTOKEN = "5afe04983bdadb254965e76837cea8b7";
+const MOCOTOKEN = "YOUR TOKEN";
+const SUBDOMAIN = "YOUR SUBDOMAIN";
 
 // inject the data into the DOM
 async function inject() {
@@ -42,7 +43,7 @@ async function getSelectedProject() {
   
   if(id != null){
 
-    var uri = "https://klickmeister.mocoapp.com/api/v1/projects/" + id + "/report";
+    var uri = "https://"+SUBDOMAIN+".mocoapp.com/api/v1/projects/" + id + "/report";
     let data = await fetch(uri, {
         headers: {
             "Accept": "*/*",
