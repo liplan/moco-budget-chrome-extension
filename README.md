@@ -2,7 +2,7 @@ Chrome-extension that shows the current percentage of a project in the time-trac
 If the budget is over 80% some GUI-elements are colored red.
 
 How to:
-1. Add your personal API-Token into content.js. Get your personal token from Moco > Profil > Integrationen > Persönlicher API Schlüssel
+1. Add your personal API-Token and SUBDOMAIN into content.js. Get your personal token from Moco > Profil > Integrationen > Persönlicher API Schlüssel.
 
 2. Open chrome://extensions/
 
