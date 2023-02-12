@@ -1,5 +1,5 @@
-Chromeextension that shows the current percentage of a project in the time-tracking-GUI of moco.
-IF the budget is over 80% some GUI-elements are colored red.
+Chrome-extension that shows the current percentage of a project in the time-tracking-GUI of moco (https://www.mocoapp.com/)
+If the budget is over 80% some GUI-elements are colored red.
 
 How to:
 1. Add your personal API-Token into content.js. Get your personal token from Moco > Profil > Integrationen > Persönlicher API Schlüssel
