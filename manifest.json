@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "MOCO Budget",
+  "version": "1.0",
+  "description": "Injects the percentage of budget to the GUI. Colors GUI-elements red, whem budget ist higher than 80%.",
+  "icons": {
+    "16": "images/icon-16.png",
+    "32": "images/icon-32.png",
+    "48": "images/icon-48.png",
+    "128": "images/icon-128.png"
+  },
+  "content_scripts": [
+    {
+      "js": [
+        "scripts/content.js"
+      ],
+      "matches": [
+        "https://klickmeister.mocoapp.com/activities"
+      ]
+    }
+  ]
+}
