@@ -14,4 +14,8 @@ How to:
 
 6. Track your time and take care of budgets
 
+Firefox:
+For adapting to firefox: Change to version 2 in manifestfile.
+
+
 Klickmeister GmbH 02.2023 Sven Schäfermeier
