@@ -27,31 +27,23 @@ async function inject() {
   
   tempDiv.innerHTML = data.budget_progress_in_percentage+"% des Budgets verbraucht.";
   heading.insertAdjacentElement("afterbegin", tempDiv);
-  
 }
 
 // get the data from chosen project
 async function getSelectedProject() {
-  let id = null;
-  document.querySelectorAll("input").
-  forEach((input) => { 
-    if (input.name == "projectId") {
-        id = input.value;
-    }
-  });   
+  let id = document.querySelector("input[name='projectId']")?.value;
   console.log("chosen project id: " + id);
-  
-  if(id != null){
 
+  if(id){
     var uri = "https://"+SUBDOMAIN+".mocoapp.com/api/v1/projects/" + id + "/report";
     let data = await fetch(uri, {
-        headers: {
-            "Accept": "*/*",
-            "Authorization": "Token token="+MOCOTOKEN
-        }
+      credentials: 'omit',
+      headers: {
+          "Accept": "*/*",
+          "Authorization": "Token token="+MOCOTOKEN
+      }
     }).then((response) => response.json());
-    console.log(data);
-    return    data; 
+    return data;
   }
 
 }
@@ -72,15 +64,15 @@ var observer = new MutationObserver(function(mutations) {
     }
      if (mutation.type == 'attributes') {
       console.log('Attribute ' + mutation.attributeName + ' changed.');
-      inject();     
+      inject();
     } 
   });   
 });
 
 var observerConfig = {
-        attributes: true,
-        childList: false,
-        characterData: false
+  attributes: true,
+  childList: false,
+  characterData: false
 };
 
 
@@ -100,21 +92,21 @@ const observeUrlChange = () => {
   let oldHref = document.location.href;
   const body = document.querySelector("body");
   const observer = new MutationObserver(mutations => {
-      mutations.forEach((mutation) => {
-        if (oldHref !== document.location.href) {
-          oldHref = document.location.href;
-          console.log("inject now");
-          setTimeout(inject, 1000);
-        }
+    mutations.forEach((mutation) => {
+      if (oldHref !== document.location.href) {
+        oldHref = document.location.href;
+        console.log("inject now");
+        setTimeout(inject, 1000);
+      }
 
-        if (mutation.type == 'attributes' && mutation.attributeName == "value") {
-          console.log('Attribute ' + mutation.attributeName + ' changed.');
-          console.log("inject now");
-          setTimeout(inject, 1000);  
-        } 
+      if (mutation.type == 'attributes' && mutation.attributeName == "value") {
+        console.log('Attribute ' + mutation.attributeName + ' changed.');
+        console.log("inject now");
+        setTimeout(inject, 1000);
+      }
 
-      });
     });
-    observer.observe(body, { childList: true, subtree: true, attributes: true });
+  });
+  observer.observe(body, { childList: true, subtree: true, attributes: true });
 };
 window.onload = observeUrlChange;
