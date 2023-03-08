@@ -5,55 +5,58 @@ const SUBDOMAIN = "YOUR SUBDOMAIN";
 // inject the data into the DOM
 async function inject() {
   
-  const heading = document.getElementsByClassName("third")[0];
+  //const heading = document.getElementsByClassName("third")[0];
+  const projectIdElement = document.querySelector('.tst-project-id .group');
   const tempDiv = document.createElement('div');
 
-  if(heading == undefined) { return; }
+  if(projectIdElement == undefined) { return; }
+
+  projectIdElement.querySelector('.budget_budget_percentage')?.remove();
 
   let data = await getSelectedProject();
-  
-  heading.innerHTML = "";
 
-  const alarm = data.budget_progress_in_percentage >= 80 ? true : false;
-  const color = alarm ? "red" : "green";
-  const borderColor = alarm ? "red" : "#cecece";
-  
-  document.querySelectorAll("textarea")[0].style = "border: 2px solid "+borderColor;
-  
+  const alarm = data.budget_progress_in_percentage >= 80;
+  const reachingAlarm = data.budget_progress_in_percentage >= 30;
+  const textClassname = alarm
+    ? 'text-danger'
+    : reachingAlarm
+      ? 'text-warning'
+      : 'text-success';
 
-  tempDiv.className = "py-4";
-  tempDiv.style = "font-size: 20px; font-weight: 700; color: " +color+ "; text-align: center;";
+  tempDiv.className = 'budget_budget_percentage ml-auto pl-1 text-sm ' + textClassname;
+  tempDiv.innerText = '| ' + data.budget_progress_in_percentage + '%';
 
-  
-  tempDiv.innerHTML = data.budget_progress_in_percentage+"% des Budgets verbraucht.";
-  heading.insertAdjacentElement("afterbegin", tempDiv);
-  
+  projectIdElement.appendChild(tempDiv);
 }
 
 // get the data from chosen project
 async function getSelectedProject() {
-  let id = null;
-  document.querySelectorAll("input").
-  forEach((input) => { 
-    if (input.name == "projectId") {
-        id = input.value;
-    }
-  });   
+  const id = document.querySelector("input[name='projectId']")?.value;
   console.log("chosen project id: " + id);
-  
-  if(id != null){
 
-    var uri = "https://"+SUBDOMAIN+".mocoapp.com/api/v1/projects/" + id + "/report";
-    let data = await fetch(uri, {
-        headers: {
-            "Accept": "*/*",
-            "Authorization": "Token token="+MOCOTOKEN
-        }
-    }).then((response) => response.json());
-    console.log(data);
-    return    data; 
+  if (id) {
+    const respData = await fetch("/graphql", {
+      "headers": {
+        "accept": "*/*",
+        "accept-language": "de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7",
+        "content-type": "application/json",
+        "sec-fetch-dest": "empty",
+        "sec-fetch-mode": "cors",
+        "sec-fetch-site": "same-origin",
+        "x-client-version": "467.9",
+        "x-csrf-token": document.querySelector('meta[name="csrf-token"]').content,
+      },
+      "referrerPolicy": "strict-origin-when-cross-origin",
+      "body": "{\"operationName\":\"QueryGetProjects\",\"variables\":{\"ids\":[\"" + id + "\"]},\"query\":\"query QueryGetProjects($ids: [ID!]) {\\n  projects(\\n    ids: $ids) {}\\n    __typename\\n  }\\n}\\n\"}",
+      "method": "POST",
+      "mode": "cors",
+      "credentials": "include"
+    }).then((resp) => resp.json());
+
+    return {
+      budget_progress_in_percentage: respData.data.projects.collection[0].budgetProgress,
+    };
   }
-
 }
 
 // setting an observer 
@@ -72,15 +75,15 @@ var observer = new MutationObserver(function(mutations) {
     }
      if (mutation.type == 'attributes') {
       console.log('Attribute ' + mutation.attributeName + ' changed.');
-      inject();     
+      inject();
     } 
   });   
 });
 
 var observerConfig = {
-        attributes: true,
-        childList: false,
-        characterData: false
+  attributes: true,
+  childList: false,
+  characterData: false
 };
 
 
@@ -100,21 +103,21 @@ const observeUrlChange = () => {
   let oldHref = document.location.href;
   const body = document.querySelector("body");
   const observer = new MutationObserver(mutations => {
-      mutations.forEach((mutation) => {
-        if (oldHref !== document.location.href) {
-          oldHref = document.location.href;
-          console.log("inject now");
-          setTimeout(inject, 1000);
-        }
+    mutations.forEach((mutation) => {
+      if (oldHref !== document.location.href) {
+        oldHref = document.location.href;
+        console.log("inject now");
+        setTimeout(inject, 1000);
+      }
 
-        if (mutation.type == 'attributes' && mutation.attributeName == "value") {
-          console.log('Attribute ' + mutation.attributeName + ' changed.');
-          console.log("inject now");
-          setTimeout(inject, 1000);  
-        } 
+      if (mutation.type == 'attributes' && mutation.attributeName == "value") {
+        console.log('Attribute ' + mutation.attributeName + ' changed.');
+        console.log("inject now");
+        setTimeout(inject, 1000);
+      }
 
-      });
     });
-    observer.observe(body, { childList: true, subtree: true, attributes: true });
+  });
+  observer.observe(body, { childList: true, subtree: true, attributes: true });
 };
 window.onload = observeUrlChange;
