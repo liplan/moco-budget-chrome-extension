@@ -15,7 +15,7 @@
         "scripts/content.js"
       ],
       "matches": [
-        "https://klickmeister.mocoapp.com/activities"
+        "https://*.mocoapp.com/activities"
       ]
     }
   ]
